@@ -1,12 +1,11 @@
 package api
 
 import (
-	"context"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	. "github.com/theplant/htmlgo"
-	"htmxgo/render"
 	"log"
+	"os"
 	"strconv"
 )
 
@@ -26,42 +25,42 @@ func updateMovie(c *gin.Context) {
 }
 
 func deleteMovie(c *gin.Context) {
+	movieId := c.Query("id")
 
+	sqliteDB.Where("id = ?", movieId).Delete(&Movie{})
+	listMovies(c)
 }
 
 func addMovie(c *gin.Context) {
-
+	// 获取formdata的参数
+	// 保存到数据库
+	// 返回
+	title := c.PostForm("title")
+	director := c.PostForm("director")
+	newMovie := Movie{
+		Title:           title,
+		Director:        director,
+		Year:            2019,
+		Rating:          "9.9",
+		Genres:          "Drama",
+		Runtime:         120,
+		Country:         "China",
+		Language:        "English",
+		ImdbScore:       9.9,
+		ImdbVotes:       10000,
+		MetacriticScore: 9.9,
+		ImdbId:          "123",
+	}
+	sqliteDB.Create(&newMovie)
+	listMovies(c)
 }
 
 func listMovies(c *gin.Context) {
 	movies, page := listMoviesFromDB(c)
-	prevUrl := fmt.Sprintf("http://127.0.0.1:8080/movies?page=%d", page-1)
-	afterUrl := fmt.Sprintf("http://127.0.0.1:8080/movies?page=%d", page+1)
-	table := func(movies []Movie) HTMLComponent {
-		movieTrs := make([]HTMLComponent, 0)
-		for _, movie := range movies {
-			movieTrs = append(movieTrs, MovieTableBody(movie))
-		}
+	prevUrl := fmt.Sprintf("http://127.0.0.1:%s/movies?page=%d", os.Getenv("API_PORT"), page-1)
+	afterUrl := fmt.Sprintf("http://127.0.0.1:%s/movies?page=%d", os.Getenv("API_PORT"), page+1)
+	table := MovieTable(prevUrl, page, afterUrl)
 
-		return ComponentFunc(func(ctx context.Context) (r []byte, err error) {
-			table :=
-				Table(
-					MovieTableHead(),
-					Tbody(movieTrs...),
-				).Class("table min-w-full divide-y divide-gray-300")
-			pagination :=
-				Div(
-					Button("«").Attr(render.HxGet, prevUrl, render.HxSwap, "innerHTML", render.HxTarget, "#movieTable").Class("join-item btn btn-sm"),
-					Button(strconv.Itoa(page)).Class("join-item btn btn-sm"),
-					Button("»").Attr(render.HxGet, afterUrl, render.HxSwap, "innerHTML", render.HxTarget, "#movieTable").Class("join-item btn btn-sm"),
-				).Class("join flex justify-center mt-4")
-			hs := HTMLComponents{
-				table,
-				pagination,
-			}
-			return hs.MarshalHTML(ctx)
-		})
-	}
 	Fprint(c.Writer, table(movies), c)
 }
 

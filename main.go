@@ -3,23 +3,32 @@ package main
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	_ "github.com/joho/godotenv/autoload"
 	"htmxgo/api"
 	"htmxgo/render"
 	"os"
 	"os/signal"
+	"strconv"
 )
 
 func main() {
 	render.Generate()
 
 	// 启动 API 服务器
-	apiPort := 8080
+	apiPort, err := strconv.Atoi(os.Getenv("API_PORT"))
+	if err != nil {
+		panic(err)
+	}
 	go startAPIServer(apiPort)
 
 	// 启动 HTML 文件服务器
-	htmlPort := 8081
+	htmlPort, err := strconv.Atoi(os.Getenv("HTML_PORT"))
+	if err != nil {
+		panic(err)
+	}
 	go startHTMLServer(htmlPort)
 
+	// 留一个缓冲可以防止阻塞并且防止丢失信号
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt)
 	<-c

@@ -33,11 +33,11 @@
 <div class='mt-4'>
 <input name='title' type='text' placeholder='Title' class='input input-bordered w-full max-w-xs'>
 
-<input name='director' type='text' placeholder='Director' class='input input-bordered w-full max-w-xs'>
+<input name='director' type='text' placeholder='Director' class='input input-bordered w-full max-w-xs mt-4'>
 </div>
 
 <div class='modal-action'>
-<button class='btn btn-success'>Add</button>
+<button hx-post='http://127.0.0.1:8080/movie' hx-include='[name=&#39;title&#39;],[name=&#39;director&#39;]' class='btn btn-success'>Add</button>
 
 <form method='dialog'>
 <button class='btn'>Close</button>
@@ -53,11 +53,11 @@
 <div class='mt-4'>
 <input name='title' type='text' placeholder='Title' class='input input-bordered w-full max-w-xs'>
 
-<input name='director' type='text' placeholder='Director' class='input input-bordered w-full max-w-xs'>
+<input name='director' type='text' placeholder='Director' class='input input-bordered w-full max-w-xs mt-4'>
 </div>
 
 <div class='modal-action'>
-<button class='btn btn-success'>Update</button>
+<button hx-post='http://127.0.0.1:8080/movie' hx-include='[name=&#39;title&#39;],[name=&#39;director&#39;]' class='btn btn-success'>Update</button>
 
 <form method='dialog'>
 <button class='btn'>Close</button>

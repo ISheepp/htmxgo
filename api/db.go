@@ -8,10 +8,19 @@ import (
 var sqliteDB *gorm.DB
 
 type Movie struct {
-	Id       int
-	Title    string
-	Director string
-	Year     int
+	Id              int     `gorm:"id" json:"id"`
+	ImdbId          string  `gorm:"imdb_id" json:"imdbId"`
+	Title           string  `gorm:"title" json:"title"`
+	Director        string  `gorm:"director" json:"director"`
+	Year            int     `gorm:"year" json:"year"`
+	Rating          string  `gorm:"rating" json:"rating"`
+	Genres          string  `gorm:"genres" json:"genres"`
+	Runtime         int     `gorm:"runtime" json:"runtime"`
+	Country         string  `gorm:"country" json:"country"`
+	Language        string  `gorm:"language" json:"language"`
+	ImdbScore       float64 `gorm:"imdb_score" json:"imdbScore"`
+	ImdbVotes       int     `gorm:"imdb_votes" json:"imdbVotes"`
+	MetacriticScore float64 `gorm:"metacritic_score" json:"metacriticScore"`
 }
 
 func NewSqliteDB() {

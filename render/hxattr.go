@@ -10,10 +10,12 @@ import (
 const (
 	HxGet     = "hx-get"
 	HxPost    = "hx-post"
+	HxDelete  = "hx-delete"
 	HxSwap    = "hx-swap"
 	HxTarget  = "hx-target"
 	HxTrigger = "hx-trigger"
 	HxParams  = "hx-params"
+	HxInclude = "hx-include"
 )
 
 func Generate() {
@@ -60,10 +62,10 @@ func movieDialog(action, id string) HTMLComponent {
 				H3(title).Class("font-bold text-lg"),
 				Div(
 					Input("title").Type("text").Placeholder("Title").Class("input input-bordered w-full max-w-xs"),
-					Input("director").Type("text").Placeholder("Director").Class("input input-bordered w-full max-w-xs"),
+					Input("director").Type("text").Placeholder("Director").Class("input input-bordered w-full max-w-xs mt-4"),
 				).Class("mt-4"),
 				Div(
-					Button(action).Class("btn btn-success"),
+					Button(action).Attr(HxPost, "http://127.0.0.1:8080/movie", HxInclude, "[name='title'],[name='director']").Class("btn btn-success"),
 					Form(
 						Button("Close").Class("btn"),
 					).Method("dialog"),
