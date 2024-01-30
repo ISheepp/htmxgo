@@ -27,7 +27,7 @@ func MovieTableBody(movie Movie) HTMLComponent {
 			Td().Text(movie.Title).Class("py-2"),
 			Td().Text(movie.Director).Class("py-2"),
 			Td(
-				Button("edit").Attr("onclick", "update_model.showModal()").Class("btn btn-xs btn-neutral mr-2"),
+				Button("edit").Attr("onclick", "update_model.showModal()", render.HxGet, "http://127.0.0.1:8080/movie?id="+strconv.Itoa(movie.Id), render.HxSwap, "outerHTML", render.HxTarget, "#UpdateDialog").Class("btn btn-xs btn-neutral mr-2"),
 				Button("delete").Attr(render.HxDelete, "http://127.0.0.1:8080/movie?id="+strconv.Itoa(movie.Id)).Class("btn btn-xs btn-error"),
 			).Class("py-2"),
 		).MarshalHTML(ctx)

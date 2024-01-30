@@ -10,6 +10,7 @@ import (
 const (
 	HxGet     = "hx-get"
 	HxPost    = "hx-post"
+	HxPut     = "hx-put"
 	HxDelete  = "hx-delete"
 	HxSwap    = "hx-swap"
 	HxTarget  = "hx-target"
@@ -48,24 +49,49 @@ func render() HTMLComponent {
 				).Class("bg-white p-8 rounded-md shadow-md"),
 			).Class("bg-gray-200 h-screen flex items-center justify-center"),
 
-			movieDialog("Add", "add_model"),
-			movieDialog("Update", "update_model"),
+			MovieDialog("Add", "add_model", HxPost, "", "", ""),
+			UpdateDialog("Update", "update_model", HxPut, "", "", ""),
 		),
 	)
 }
 
-func movieDialog(action, id string) HTMLComponent {
+func MovieDialog(action, id, method, title, director, movieId string) HTMLComponent {
 	return ComponentFunc(func(ctx context.Context) (r []byte, err error) {
-		title := fmt.Sprintf("%s Movie!", action)
+		dialogTitle := fmt.Sprintf("%s Movie!", action)
+		apiUrl := fmt.Sprintf("http://127.0.0.1:8080/movie%s", movieId)
+		inputDivId := fmt.Sprintf("%sDialog", action)
 		return Dialog(
 			Div(
-				H3(title).Class("font-bold text-lg"),
+				H3(dialogTitle).Class("font-bold text-lg"),
 				Div(
-					Input("title").Type("text").Placeholder("Title").Class("input input-bordered w-full max-w-xs"),
-					Input("director").Type("text").Placeholder("Director").Class("input input-bordered w-full max-w-xs mt-4"),
-				).Class("mt-4"),
+					Input("title").Type("text").Text(title).Placeholder("Title").Class("input input-bordered w-full max-w-xs"),
+					Input("director").Type("text").Text(director).Placeholder("Director").Class("input input-bordered w-full max-w-xs mt-4"),
+				).Class("mt-4").Id(inputDivId),
 				Div(
-					Button(action).Attr(HxPost, "http://127.0.0.1:8080/movie", HxInclude, "[name='title'],[name='director']").Class("btn btn-success"),
+					Button(action).Attr(method, apiUrl, HxInclude, "[name='title'],[name='director'],[name='movieId']").Class("btn btn-success"),
+					Form(
+						Button("Close").Class("btn"),
+					).Method("dialog"),
+				).Class("modal-action"),
+			).Class("modal-box"),
+		).Id(id).Class("modal").MarshalHTML(ctx)
+	})
+}
+
+func UpdateDialog(action, id, method, title, director, movieId string) HTMLComponent {
+	return ComponentFunc(func(ctx context.Context) (r []byte, err error) {
+		dialogTitle := fmt.Sprintf("%s Movie!", action)
+		apiUrl := fmt.Sprintf("http://127.0.0.1:8080/movie%s", movieId)
+		inputDivId := fmt.Sprintf("%sDialog", action)
+		return Dialog(
+			Div(
+				H3(dialogTitle).Class("font-bold text-lg"),
+				Div(
+					Input("update_title").Type("text").Text(title).Placeholder("Title").Class("input input-bordered w-full max-w-xs"),
+					Input("update_director").Type("text").Text(director).Placeholder("Director").Class("input input-bordered w-full max-w-xs mt-4"),
+				).Class("mt-4").Id(inputDivId),
+				Div(
+					Button(action).Attr(method, apiUrl, HxInclude, "[name='update_title'],[name='update_director'],[name='movieId']").Class("btn btn-success"),
 					Form(
 						Button("Close").Class("btn"),
 					).Method("dialog"),

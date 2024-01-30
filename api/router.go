@@ -14,14 +14,38 @@ func NewRouter() (engine *gin.Engine) {
 	engine.Use(CORSMiddleware())
 
 	engine.GET("/movies", listMovies)
+	engine.GET("/movie", getMovieById)
 	engine.POST("/movie", addMovie)
 	engine.DELETE("/movie", deleteMovie)
 	engine.PUT("/movie", updateMovie)
 	return engine
 }
 
-func updateMovie(c *gin.Context) {
+func getMovieById(c *gin.Context) {
+	movieId := c.Query("id")
 
+	movie := Movie{}
+	sqliteDB.Where("id = ?", movieId).First(&movie)
+	// dialog := render.MovieDialog("update", "update_model", render.HxPut, movie.Title, movie.Director, strconv.Itoa(movie.Id))
+	dialog := Div(
+		Input("movieId").Type("hidden").Value(movieId).Class("input input-bordered w-full max-w-xs"),
+		Input("update_title").Type("text").Value(movie.Title).Placeholder("Title").Class("input input-bordered w-full max-w-xs"),
+		Input("update_director").Type("text").Value(movie.Director).Placeholder("Director").Class("input input-bordered w-full max-w-xs mt-4"),
+	).Class("mt-4").Id("UpdateDialog")
+	Fprint(c.Writer, dialog, c)
+}
+
+func updateMovie(c *gin.Context) {
+	movieId := c.PostForm("movieId")
+	if movieId == "" {
+		log.Println("movieId is empty")
+		return
+	}
+	movie := Movie{}
+	sqliteDB.Where("id = ?", movieId).First(&movie)
+	movie.Title = c.PostForm("update_title")
+	movie.Director = c.PostForm("update_director")
+	sqliteDB.Save(&movie)
 }
 
 func deleteMovie(c *gin.Context) {
