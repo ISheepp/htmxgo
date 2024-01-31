@@ -20,7 +20,7 @@ const (
 )
 
 func Generate() {
-	file, err := os.Create("./render/index.html")
+	file, err := os.Create("./static/index.html")
 	if err != nil {
 		panic(err)
 	}

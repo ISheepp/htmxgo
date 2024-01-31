@@ -1,6 +1,8 @@
 package main
 
 import (
+	"embed"
+	_ "embed"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	_ "github.com/joho/godotenv/autoload"
@@ -10,6 +12,9 @@ import (
 	"os/signal"
 	"strconv"
 )
+
+//go:embed static/*
+var content embed.FS
 
 func main() {
 	render.Generate()
@@ -48,7 +53,7 @@ func startAPIServer(port int) {
 func startHTMLServer(port int) {
 	engine := gin.Default()
 	engine.Any("/", func(c *gin.Context) {
-		c.File("./render/index.html")
+		c.File("static/index.html")
 	})
 
 	addr := fmt.Sprintf(":%d", port)
