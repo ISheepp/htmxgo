@@ -37,7 +37,7 @@
 </div>
 
 <div class='modal-action'>
-<button hx-post='http://127.0.0.1:8080/movie' hx-include='[name=&#39;title&#39;],[name=&#39;director&#39;],[name=&#39;movieId&#39;]' class='btn btn-success'>Add</button>
+<button hx-post='http://127.0.0.1:8080/movie' hx-include='[name=&#39;title&#39;],[name=&#39;director&#39;],[name=&#39;movieId&#39;]' hx-swap='outerHTML' hx-target='#add_model' class='btn btn-success'>Add</button>
 
 <form method='dialog'>
 <button class='btn'>Close</button>
@@ -57,7 +57,7 @@
 </div>
 
 <div class='modal-action'>
-<button hx-put='http://127.0.0.1:8080/movie' hx-include='[name=&#39;update_title&#39;],[name=&#39;update_director&#39;],[name=&#39;movieId&#39;]' class='btn btn-success'>Update</button>
+<button hx-put='http://127.0.0.1:8080/movie' hx-include='[name=&#39;update_title&#39;],[name=&#39;update_director&#39;],[name=&#39;movieId&#39;]' hx-swap='outerHTML' hx-target='#update_model' class='btn btn-success'>Update</button>
 
 <form method='dialog'>
 <button class='btn'>Close</button>

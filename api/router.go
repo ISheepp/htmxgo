@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	. "github.com/theplant/htmlgo"
+	"htmxgo/render"
 	"log"
 	"os"
 	"strconv"
@@ -46,6 +47,13 @@ func updateMovie(c *gin.Context) {
 	movie.Title = c.PostForm("update_title")
 	movie.Director = c.PostForm("update_director")
 	sqliteDB.Save(&movie)
+	dialog := render.UpdateDialog("Update", "update_model", render.HxPut, "", "", "")
+	movies, table := listMoviesAction(c)
+	components := HTMLComponents{
+		table(movies),
+		dialog,
+	}
+	Fprint(c.Writer, components, c)
 }
 
 func deleteMovie(c *gin.Context) {
@@ -76,16 +84,22 @@ func addMovie(c *gin.Context) {
 		ImdbId:          "123",
 	}
 	sqliteDB.Create(&newMovie)
-	listMovies(c)
+	dialog := render.MovieDialog("Add", "add_model", render.HxPost, "", "", "")
+	Fprint(c.Writer, dialog, c)
 }
 
 func listMovies(c *gin.Context) {
+	movies, table := listMoviesAction(c)
+
+	Fprint(c.Writer, table(movies), c)
+}
+
+func listMoviesAction(c *gin.Context) ([]Movie, func(movies []Movie) HTMLComponent) {
 	movies, page := listMoviesFromDB(c)
 	prevUrl := fmt.Sprintf("http://127.0.0.1:%s/movies?page=%d", os.Getenv("API_PORT"), page-1)
 	afterUrl := fmt.Sprintf("http://127.0.0.1:%s/movies?page=%d", os.Getenv("API_PORT"), page+1)
 	table := MovieTable(prevUrl, page, afterUrl)
-
-	Fprint(c.Writer, table(movies), c)
+	return movies, table
 }
 
 func listMoviesFromDB(c *gin.Context) ([]Movie, int) {
