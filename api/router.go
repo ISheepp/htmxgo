@@ -48,9 +48,11 @@ func updateMovie(c *gin.Context) {
 	movie.Director = c.PostForm("update_director")
 	sqliteDB.Save(&movie)
 	dialog := render.UpdateDialog("Update", "update_model", render.HxPut, "", "", "")
+	addDialog := render.MovieDialog("Add", "add_model", render.HxPost, "", "", "")
 	movies, table := listMoviesAction(c)
 	components := HTMLComponents{
 		table(movies),
+		addDialog,
 		dialog,
 	}
 	Fprint(c.Writer, components, c)
@@ -84,8 +86,15 @@ func addMovie(c *gin.Context) {
 		ImdbId:          "123",
 	}
 	sqliteDB.Create(&newMovie)
-	dialog := render.MovieDialog("Add", "add_model", render.HxPost, "", "", "")
-	Fprint(c.Writer, dialog, c)
+	dialog := render.UpdateDialog("Update", "update_model", render.HxPut, "", "", "")
+	addDialog := render.MovieDialog("Add", "add_model", render.HxPost, "", "", "")
+	movies, table := listMoviesAction(c)
+	components := HTMLComponents{
+		table(movies),
+		addDialog,
+		dialog,
+	}
+	Fprint(c.Writer, components, c)
 }
 
 func listMovies(c *gin.Context) {

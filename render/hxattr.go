@@ -41,16 +41,19 @@ func render() HTMLComponent {
 			Div(
 				Div(
 					Div(
-						H1("Best Movies").Class("text-2xl font-bold"),
-						Button("Add").Attr("onclick", "add_model.showModal()").Id("addDataBtn").Class("btn btn-success btn-sm rounded-md"),
-					).Class("flex justify-between items-center mb-4"),
+						Div(
+							H1("Best Movies").Class("text-2xl font-bold"),
+							Button("Add").Attr("onclick", "add_model.showModal()").Id("addDataBtn").Class("btn btn-success btn-sm rounded-md"),
+						).Class("flex justify-between items-center mb-4"),
 
-					Div().Attr(HxGet, "http://127.0.0.1:8080/movies", HxSwap, "innerHTML", HxTarget, "#movieTable", HxTrigger, "load").Id("movieTable"),
-				).Class("bg-white p-8 rounded-md shadow-md"),
-			).Class("bg-gray-200 h-screen flex items-center justify-center"),
-
-			MovieDialog("Add", "add_model", HxPost, "", "", ""),
-			UpdateDialog("Update", "update_model", HxPut, "", "", ""),
+						Div(
+							Div().Attr(HxGet, "http://127.0.0.1:8080/movies", HxSwap, "innerHTML", HxTarget, "#movieTable", HxTrigger, "load").Id("movieTable"),
+							MovieDialog("Add", "add_model", HxPost, "", "", ""),
+							UpdateDialog("Update", "update_model", HxPut, "", "", ""),
+						).Id("root"),
+					).Class("bg-white p-8 rounded-md shadow-md"),
+				).Class("bg-gray-200 h-screen flex items-center justify-center"),
+			),
 		),
 	)
 }
@@ -68,7 +71,7 @@ func MovieDialog(action, id, method, title, director, movieId string) HTMLCompon
 					Input("director").Type("text").Text(director).Placeholder("Director").Class("input input-bordered w-full max-w-xs mt-4"),
 				).Class("mt-4").Id(inputDivId),
 				Div(
-					Button(action).Attr(method, apiUrl, HxInclude, "[name='title'],[name='director'],[name='movieId']", HxSwap, "outerHTML", HxTarget, "#add_model").Class("btn btn-success"),
+					Button(action).Attr(method, apiUrl, HxInclude, "[name='title'],[name='director'],[name='movieId']", HxSwap, "innerHTML", HxTarget, "#root").Class("btn btn-success"),
 					Form(
 						Button("Close").Class("btn"),
 					).Method("dialog"),
@@ -91,7 +94,7 @@ func UpdateDialog(action, id, method, title, director, movieId string) HTMLCompo
 					Input("update_director").Type("text").Text(director).Placeholder("Director").Class("input input-bordered w-full max-w-xs mt-4"),
 				).Class("mt-4").Id(inputDivId),
 				Div(
-					Button(action).Attr(method, apiUrl, HxInclude, "[name='update_title'],[name='update_director'],[name='movieId']", HxSwap, "outerHTML", HxTarget, "#update_model").Class("btn btn-success"),
+					Button(action).Attr(method, apiUrl, HxInclude, "[name='update_title'],[name='update_director'],[name='movieId']", HxSwap, "innerHTML", HxTarget, "#root").Class("btn btn-success"),
 					Form(
 						Button("Close").Class("btn"),
 					).Method("dialog"),
