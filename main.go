@@ -1,11 +1,11 @@
 package main
 
 import (
-	"embed"
 	_ "embed"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	_ "github.com/joho/godotenv/autoload"
+	"github.com/theplant/htmlgo"
 	"htmxgo/api"
 	"htmxgo/render"
 	"os"
@@ -13,12 +13,8 @@ import (
 	"strconv"
 )
 
-//go:embed static/*
-var content embed.FS
-
 func main() {
-	render.Generate()
-
+	gin.SetMode(os.Getenv("GIN_MODE"))
 	// 启动 API 服务器
 	apiPort, err := strconv.Atoi(os.Getenv("API_PORT"))
 	if err != nil {
@@ -53,7 +49,7 @@ func startAPIServer(port int) {
 func startHTMLServer(port int) {
 	engine := gin.Default()
 	engine.Any("/", func(c *gin.Context) {
-		c.File("static/index.html")
+		htmlgo.Fprint(c.Writer, render.Render(), c)
 	})
 
 	addr := fmt.Sprintf(":%d", port)

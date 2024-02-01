@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	. "github.com/theplant/htmlgo"
-	"os"
 )
 
 const (
@@ -19,15 +18,7 @@ const (
 	HxInclude = "hx-include"
 )
 
-func Generate() {
-	file, err := os.Create("./static/index.html")
-	if err != nil {
-		panic(err)
-	}
-	Fprint(file, render(), nil)
-}
-
-func render() HTMLComponent {
+func Render() HTMLComponent {
 	return HTML(
 		Head(
 			Meta().Charset("utf-8"),
